@@ -1,0 +1,34 @@
+plugins {
+    id 'java'
+    id 'kr.entree.spigradle' version '2.2.4'
+    id "com.github.johnrengelman.shadow" version "7.1.0"
+}
+
+group 'pl.wolny.kwadratowamasakratablist'
+version '1.0.0'
+
+repositories {
+    mavenCentral()
+    maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
+}
+
+dependencies {
+    compileOnly 'io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT'
+}
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
+tasks {
+    build.dependsOn shadowJar
+}
+
+spigot {
+    name = "KwadratowaMasakraTablist"
+    authors = ["WcaleNieWolny"]
+    version = project.version
+    website = "https://github.com/WcaleNieWolny/"
+    apiVersion = "1.17"
+    debug {
+        buildVersion = "1.17.1"
+    }
+}
