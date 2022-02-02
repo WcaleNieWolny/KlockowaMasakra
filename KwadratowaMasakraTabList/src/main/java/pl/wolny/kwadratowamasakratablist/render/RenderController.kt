@@ -25,7 +25,7 @@ class RenderController(private val latency: Int) {
         var index = 0
         val playerInfoData: MutableList<PlayerInfoData> = arrayListOf()
         frameList.forEach{
-            val entries = it.render()
+            val entries = it.render(player)
             rawRender(entries, index, false, playerInfoData)
         }
         player.sendTabListEntity(playerInfoData)

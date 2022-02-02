@@ -13,11 +13,13 @@ repositories {
     maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
     maven { url = uri("https://repo.dmulloy2.net/repository/public/") }
     maven { url = uri("https://repo.panda-lang.org/releases" )}
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT'
     compileOnly 'com.comphenix.protocol:ProtocolLib:4.7.0'
+    compileOnly "com.github.MilkBowl:VaultAPI:1.7"
     implementation'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.10'
     implementation 'net.dzikoysk:cdn:1.13.5'
     implementation 'net.dzikoysk:cdn-kt:1.13.5'
@@ -37,6 +39,7 @@ spigot {
     version = project.version
     website = "https://github.com/WcaleNieWolny/"
     apiVersion = "1.17"
+    softDepends = List.of("Vault")
     debug {
         buildVersion = "1.17.1"
     }

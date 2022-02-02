@@ -7,6 +7,7 @@ import com.comphenix.protocol.wrappers.EnumWrappers
 import com.comphenix.protocol.wrappers.PlayerInfoData
 import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedGameProfile
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import pl.wolny.kwadratowamasakratablist.render.RenderController
 import java.util.*
@@ -36,4 +37,7 @@ fun Player.removeTabListEntityByUUID(uuid: UUID){
         EnumWrappers.NativeGameMode.NOT_SET,
         WrappedChatComponent.fromText("")
     ))
+}
+fun Player.getAvailablePlayers(): List<Player> {
+    return Bukkit.getServer().onlinePlayers.filter { player?.canSee(it) == true }
 }

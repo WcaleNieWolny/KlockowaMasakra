@@ -10,6 +10,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
 import pl.wolny.kwadratowamasakratablist.model.configuration.TabListConfig
+import pl.wolny.kwadratowamasakratablist.model.frame.PrePlayerFrame
 import pl.wolny.kwadratowamasakratablist.model.frame.SimpleFrame
 import pl.wolny.kwadratowamasakratablist.render.RenderController
 import java.io.File
@@ -20,8 +21,8 @@ import java.util.logging.Level
 @SpigotPlugin
 class KwadratowaMasakraTabList: JavaPlugin(), Listener {
 
-    private val tabListConfig: TabListConfig = createConfig()!!
-    private val renderController = RenderController(tabListConfig.ping)
+    private val tabListConfig: TabListConfig = createConfig()
+    private val renderController: RenderController = RenderController(tabListConfig.ping)
     private val simpleFrame = SimpleFrame()
 
 
@@ -29,7 +30,7 @@ class KwadratowaMasakraTabList: JavaPlugin(), Listener {
         // Plugin startup logic
         val pluginManager = Bukkit.getPluginManager()
         pluginManager.registerEvents(this, this)
-        renderController.registerFrame(simpleFrame)
+        renderController.registerFrame(PrePlayerFrame())
 
     }
 
@@ -37,19 +38,20 @@ class KwadratowaMasakraTabList: JavaPlugin(), Listener {
         // Plugin shutdown logic
     }
 
-    fun createConfig(): TabListConfig?{
+    fun createConfig(): TabListConfig{
         val cdn = KCdnFactory.createYamlLike()
         val configFile = File(this.dataFolder, "config.yml")
-        val configSource = Source.of(file)
+        val configSource = Source.of(configFile)
         val configResult = cdn.loadAs<TabListConfig>(configSource)
         if(configResult.isErr){
             logger.log(Level.SEVERE, "Can't create config file!")
             configResult.error.printStackTrace()
             pluginLoader.disablePlugin(this)
-            return null
+            return TabListConfig() //Can't return null
         }
+        val config = configResult.get()
         cdn.render(config, configSource)
-        return configResult.get()
+        return config
     }
 
     @EventHandler
