@@ -9,7 +9,7 @@ import pl.wolny.kwadratowamasakratablist.model.frame.Frame
 import pl.wolny.kwadratowamasakratablist.model.player.TabListPlayer
 import java.util.*
 
-class RenderController() {
+class RenderController(private val latency: Int) {
 
     companion object{
         const val UUID_PATTERN = "00000000-0000-%s-0000-000000000000"
@@ -39,7 +39,7 @@ class RenderController() {
             }
             val fakePlayer = PlayerInfoData(
                 WrappedGameProfile(UUID.fromString(String.format(UUID_PATTERN, index)), ""),
-                10,
+                latency,
                 EnumWrappers.NativeGameMode.ADVENTURE,
                 it.name()
             )

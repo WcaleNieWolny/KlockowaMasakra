@@ -5,7 +5,11 @@ import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.wrappers.EnumWrappers
 import com.comphenix.protocol.wrappers.PlayerInfoData
+import com.comphenix.protocol.wrappers.WrappedChatComponent
+import com.comphenix.protocol.wrappers.WrappedGameProfile
 import org.bukkit.entity.Player
+import pl.wolny.kwadratowamasakratablist.render.RenderController
+import java.util.*
 
 fun Player.sendTabListEntity(profileInfoData: List<PlayerInfoData>){
     val packet = PacketContainer(PacketType.Play.Server.PLAYER_INFO)
@@ -24,4 +28,12 @@ fun Player.removeTabListEntity(profileInfoData: List<PlayerInfoData>){
 }
 fun Player.removeTabListEntity(profileInfoData: PlayerInfoData){
     player?.removeTabListEntity(listOf(profileInfoData))
+}
+fun Player.removeTabListEntityByUUID(uuid: UUID){
+    player?.removeTabListEntity(PlayerInfoData(
+        WrappedGameProfile(uuid, ""),
+        0,
+        EnumWrappers.NativeGameMode.NOT_SET,
+        WrappedChatComponent.fromText("")
+    ))
 }
