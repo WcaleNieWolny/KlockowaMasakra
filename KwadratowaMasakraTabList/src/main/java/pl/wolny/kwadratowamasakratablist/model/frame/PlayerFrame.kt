@@ -17,7 +17,7 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
-class PlayerFrame(private val vaultHook: VaultHook, private val tabListRepository: TabListRepository, private val plugin: JavaPlugin) : Frame, Listener {
+class PlayerFrame(private val vaultHook: VaultHook, private val tabListRepository: TabListRepository, private val plugin: JavaPlugin) : Frame {
 
     override fun render(player: Player): List<TabListPlayer> {
         val tabListPlayers: MutableList<TabListPlayer> = arrayListOf()
@@ -49,9 +49,11 @@ class PlayerFrame(private val vaultHook: VaultHook, private val tabListRepositor
         val offlinePlayers = tabListRepository.tabListUsers.filter { !it.isOnline() }.sortedBy { it.money }
         val slotLeft = 38-index
         for (i in 0..slotLeft){
-            val offlinePlayer = offlinePlayers[i]
-            tabListPlayers.add(createPrivateUser(offlinePlayer))
-            index++
+            val offlinePlayer = offlinePlayers.getOrNull(i)
+            if(offlinePlayer != null){
+                tabListPlayers.add(createPrivateUser(offlinePlayer))
+                index++
+            }
         }
         if(offlinePlayers.size > slotLeft){
             val overflow = offlinePlayers.size - slotLeft

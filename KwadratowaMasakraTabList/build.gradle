@@ -44,14 +44,25 @@ tasks {
     build.dependsOn shadowJar
 }
 
-def outputJar = "${buildDir}/libs/${rootProject.name}.jar"
+def preObf = "build/libs/KwadratowaMasakraTabList-1.0.0-all.jar"
+def postObf = "build/libs/KwadratowaMasakraTabList-1.0.0-obf.jar"
+def preObfFinal = "build/libs/KwadratowaMasakraTabList-1.0.0-dev.jar"
+def postObfFinal = "build/libs/KwadratowaMasakraTabList-1.0.0-production.jar"
 
 task ('proguard', type: ProGuardTask) {
     keepkotlinmetadata()
-    injars  'build/libs/KwadratowaMasakraTabList-1.0.0-all.jar'
-    outjars 'build/libs/KwadratowaMasakraTabList-1.0.0-obf.jar'
+    injars  preObf
+    outjars postObf
     //libraryjars "${buildDir}/libs/dependencies/"
     configuration 'configuration.pro'
+}
+
+tasks.named("build") { finalizedBy("proguard") }
+tasks.named("proguard") { finalizedBy("rename") }
+
+task rename() {
+    ant.move(file:postObf, tofile:postObfFinal)
+    ant.move(file:preObf, tofile:preObfFinal)
 }
 
 spigot {

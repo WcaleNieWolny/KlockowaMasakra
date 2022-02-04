@@ -15,8 +15,8 @@ class DeathFrame(private val repository: TabListRepository): Frame {
         returnList.add(ColoredTabListPlayer("&a&lŚmierci"))
         returnList.add(EmptyTabListPlayer())
         for(i in index..18){
-            val user = deathList[i]
-            if(deathList.size > i+1) {
+            val user = deathList.getOrNull(i-1)
+            if(user != null) {
                 returnList.add(ColoredTabListPlayer("&3${user.deaths} &7${user.name}"))
             }else{
                 returnList.add(EmptyTabListPlayer())

@@ -39,7 +39,7 @@ class KwadratowaMasakraTabList: JavaPlugin(), Listener {
         // Plugin startup logic
         val pluginManager = Bukkit.getPluginManager()
         pluginManager.registerEvents(this, this)
-        pluginManager.registerEvents(playerFrame, this)
+        pluginManager.registerEvents(repository, this)
         renderController.registerFrame(PrePlayerFrame())
         renderController.registerFrame(playerFrame)
         renderController.registerFrame(EmptyFrame())

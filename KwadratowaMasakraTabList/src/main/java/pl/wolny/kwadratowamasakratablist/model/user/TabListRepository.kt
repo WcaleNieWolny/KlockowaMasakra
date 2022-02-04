@@ -7,6 +7,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Statistic
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import pl.wolny.kwadratowamasakratablist.hook.VaultHook
@@ -15,7 +16,7 @@ import java.io.File
 import java.io.FileWriter
 import java.util.*
 
-class TabListRepository(private val dataFolder: File, private val vaultHook: VaultHook) {
+class TabListRepository(private val dataFolder: File, private val vaultHook: VaultHook): Listener {
 
     val tabListUsers: MutableList<TabListUser> = arrayListOf()
 
