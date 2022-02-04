@@ -17,6 +17,7 @@ import pl.wolny.kwadratowamasakratablist.model.frame.PlayerFrame
 import pl.wolny.kwadratowamasakratablist.model.frame.PrePlayerFrame
 import pl.wolny.kwadratowamasakratablist.model.user.TabListRepository
 import pl.wolny.kwadratowamasakratablist.render.RenderController
+import pl.wolny.kwadratowamasakratablist.render.UpdateTask
 import java.io.File
 import java.util.*
 import java.util.logging.Level
@@ -29,8 +30,9 @@ class KwadratowaMasakraTabList: JavaPlugin(), Listener {
     private val renderController: RenderController = RenderController(tabListConfig.ping)
     private val vaultHook = VaultHook()
     private val repository = TabListRepository(dataFolder, vaultHook)
-    private val playerFrame = PlayerFrame(vaultHook, repository)
+    private val playerFrame = PlayerFrame(vaultHook, repository, this)
     private val deathFrame = DeathFrame(repository)
+    private val updateTask = UpdateTask(renderController)
 
 
     override fun onEnable() {
@@ -42,6 +44,7 @@ class KwadratowaMasakraTabList: JavaPlugin(), Listener {
         renderController.registerFrame(playerFrame)
         renderController.registerFrame(EmptyFrame())
         renderController.registerFrame(deathFrame)
+        updateTask.runTaskTimerAsynchronously(this, 20, 20)
         vaultHook.setup()
         repository.setUp()
 
@@ -70,7 +73,8 @@ class KwadratowaMasakraTabList: JavaPlugin(), Listener {
     @EventHandler
     fun onJoin(event: PlayerJoinEvent){
         val player = event.player
-        renderController.render(player)
+        Bukkit.getScheduler().runTaskAsynchronously(this, Runnable { renderController.render(player, false)  })
+
 //        player.sendTabListEntity(PlayerInfoData(
 //            WrappedGameProfile(UUID.randomUUID(), "ADAM"),
 //            10,

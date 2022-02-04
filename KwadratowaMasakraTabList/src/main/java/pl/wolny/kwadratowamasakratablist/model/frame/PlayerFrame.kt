@@ -1,15 +1,9 @@
 package pl.wolny.kwadratowamasakratablist.model.frame
 
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.bukkit.Bukkit
-import org.bukkit.Statistic
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.entity.PlayerDeathEvent
-import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.plugin.java.JavaPlugin
 import pl.wolny.kwadratowamasakratablist.extension.getAvailablePlayers
 import pl.wolny.kwadratowamasakratablist.extension.getBalance
 import pl.wolny.kwadratowamasakratablist.hook.VaultHook
@@ -19,18 +13,24 @@ import pl.wolny.kwadratowamasakratablist.model.player.RealTabListPlayer
 import pl.wolny.kwadratowamasakratablist.model.player.TabListPlayer
 import pl.wolny.kwadratowamasakratablist.model.user.TabListRepository
 import pl.wolny.kwadratowamasakratablist.model.user.TabListUser
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileWriter
 import java.util.*
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
 
-class PlayerFrame(private val vaultHook: VaultHook, private val tabListRepository: TabListRepository) : Frame, Listener {
+class PlayerFrame(private val vaultHook: VaultHook, private val tabListRepository: TabListRepository, private val plugin: JavaPlugin) : Frame, Listener {
 
     override fun render(player: Player): List<TabListPlayer> {
         val tabListPlayers: MutableList<TabListPlayer> = arrayListOf()
         var index = 2
 
-        var availablePlayers = player.getAvailablePlayers()
+        var availablePlayers: List<Player>// = player.getAvailablePlayers()
+        val playerCompletableFuture: CompletableFuture<List<Player>> = CompletableFuture()
+        Bukkit.getScheduler().runTask(plugin, Runnable {
+            playerCompletableFuture.complete(player.getAvailablePlayers())
+        })
+        availablePlayers = playerCompletableFuture.get(3000, TimeUnit.MILLISECONDS)
+
+
         if (vaultHook.isAvailable()) {
             availablePlayers = availablePlayers.sortedBy { it.getBalance(vaultHook) }.reversed()
         }

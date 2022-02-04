@@ -28,6 +28,12 @@ fun Player.removeTabListEntity(profileInfoData: List<PlayerInfoData>){
     packet.playerInfoAction.write(0, EnumWrappers.PlayerInfoAction.REMOVE_PLAYER)
     ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet)
 }
+fun Player.updateTabListEntity(profileInfoData: List<PlayerInfoData>){
+    val packet = PacketContainer(PacketType.Play.Server.PLAYER_INFO)
+    packet.playerInfoDataLists.write(0, profileInfoData)
+    packet.playerInfoAction.write(0, EnumWrappers.PlayerInfoAction.UPDATE_DISPLAY_NAME)
+    ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet)
+}
 fun Player.removeTabListEntity(profileInfoData: PlayerInfoData){
     player?.removeTabListEntity(listOf(profileInfoData))
 }

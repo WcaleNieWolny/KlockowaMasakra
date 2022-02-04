@@ -5,6 +5,7 @@ import com.comphenix.protocol.wrappers.PlayerInfoData
 import com.comphenix.protocol.wrappers.WrappedGameProfile
 import org.bukkit.entity.Player
 import pl.wolny.kwadratowamasakratablist.extension.sendTabListEntity
+import pl.wolny.kwadratowamasakratablist.extension.updateTabListEntity
 import pl.wolny.kwadratowamasakratablist.model.frame.Frame
 import pl.wolny.kwadratowamasakratablist.model.player.TabListPlayer
 import java.util.*
@@ -21,18 +22,25 @@ class RenderController(private val latency: Int) {
         frameList.add(frame)
     }
 
-    fun render(player: Player){
+    fun render(player: Player, update: Boolean){
         var index = 0
         val playerInfoData: MutableList<PlayerInfoData> = arrayListOf()
         frameList.forEach{
-            println(it::class.java.name)
             val entries = it.render(player)
-            index = rawRender(entries, index, false, playerInfoData)
+            index = rawRender(entries, index, playerInfoData)
+        }
+        if(update){
+            player.updateTabListEntity(playerInfoData)
+            return
         }
         player.sendTabListEntity(playerInfoData)
     }
 
-    private fun rawRender(tabListPlayers: List<TabListPlayer>, preIndex: Int, update: Boolean, playerInfoData: MutableList<PlayerInfoData>): Int{
+    private fun rawRender(
+        tabListPlayers: List<TabListPlayer>,
+        preIndex: Int,
+        playerInfoData: MutableList<PlayerInfoData>
+    ): Int{
         var index = preIndex
         tabListPlayers.forEach{
             if(index > 80){

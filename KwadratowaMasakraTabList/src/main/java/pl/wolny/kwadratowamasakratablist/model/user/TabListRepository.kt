@@ -28,7 +28,7 @@ class TabListRepository(private val dataFolder: File, private val vaultHook: Vau
         files.forEach {
             val userString = it.bufferedReader().readLine()
             try {
-                val tabListUser: TabListUser = Json.decodeFromString(userString)
+                val tabListUser: TabListUser = Json { ignoreUnknownKeys = true }.decodeFromString(TabListUser.serializer(), userString)
                 tabListUser.deaths = Bukkit.getOfflinePlayer(it.nameWithoutExtension).getStatistic(Statistic.DEATHS)
                 tabListUser.uuid = UUID.fromString(it.nameWithoutExtension)
                 tabListUsers.add(tabListUser)

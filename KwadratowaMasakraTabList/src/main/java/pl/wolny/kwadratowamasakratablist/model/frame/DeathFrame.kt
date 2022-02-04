@@ -10,7 +10,7 @@ import pl.wolny.kwadratowamasakratablist.model.user.TabListUser
 class DeathFrame(private val repository: TabListRepository): Frame {
     override fun render(player: Player): List<TabListPlayer> {
         val index = 1
-        val deathList = repository.tabListUsers.sortedBy { it.deaths }
+        val deathList = repository.tabListUsers.sortedBy { it.deaths }.reversed()
         val returnList: MutableList<TabListPlayer> = arrayListOf()
         returnList.add(ColoredTabListPlayer("&a&lŚmierci"))
         returnList.add(EmptyTabListPlayer())
