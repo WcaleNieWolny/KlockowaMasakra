@@ -7,7 +7,7 @@ import org.bukkit.plugin.RegisteredServiceProvider
 
 class VaultHook: PluginHook<Economy?> {
 
-    var available: Boolean = false
+    private var available: Boolean = false
     private var economy: Economy? = null
 
     override fun isAvailable(): Boolean {
@@ -16,7 +16,7 @@ class VaultHook: PluginHook<Economy?> {
 
     override fun setup() {
         val vault = getServer().pluginManager.getPlugin("Vault") ?: return
-        if (vault.isEnabled) {
+        if (!vault.isEnabled) {
             return
         }
         val rsp: RegisteredServiceProvider<Economy> = getServer().servicesManager.getRegistration(Economy::class.java) ?: return
@@ -24,7 +24,7 @@ class VaultHook: PluginHook<Economy?> {
         available = true
     }
 
-    override fun getProvider(): Economy? {
+    override fun provider(): Economy? {
         if(!isAvailable()){
             throw IllegalStateException("Can't acces Vault provider! Hook is not Available")
         }

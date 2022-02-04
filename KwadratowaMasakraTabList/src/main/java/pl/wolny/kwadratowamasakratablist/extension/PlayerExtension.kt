@@ -9,6 +9,7 @@ import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedGameProfile
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import pl.wolny.kwadratowamasakratablist.hook.VaultHook
 import pl.wolny.kwadratowamasakratablist.render.RenderController
 import java.util.*
 
@@ -40,4 +41,13 @@ fun Player.removeTabListEntityByUUID(uuid: UUID){
 }
 fun Player.getAvailablePlayers(): List<Player> {
     return Bukkit.getServer().onlinePlayers.filter { player?.canSee(it) == true }
+}
+fun Player.createTabListName(vaultHook: VaultHook): String{
+    if(vaultHook.isAvailable()){
+        return "&3${vaultHook.provider()?.getBalance(player)} &a${player?.displayName}"
+    }
+    return "&a${player?.displayName}"
+}
+fun Player.getBalance(vaultHook: VaultHook): Int{
+    return vaultHook.provider()?.getBalance(player)?.toInt() ?: 0
 }

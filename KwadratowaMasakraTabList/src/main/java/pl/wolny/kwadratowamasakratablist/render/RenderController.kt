@@ -15,7 +15,7 @@ class RenderController(private val latency: Int) {
         const val UUID_PATTERN = "00000000-0000-%s-0000-000000000000"
     }
 
-    val frameList: MutableList<Frame> = arrayListOf()
+    private val frameList: MutableList<Frame> = arrayListOf()
 
     fun registerFrame(frame: Frame){
         frameList.add(frame)
@@ -25,8 +25,9 @@ class RenderController(private val latency: Int) {
         var index = 0
         val playerInfoData: MutableList<PlayerInfoData> = arrayListOf()
         frameList.forEach{
+            println(it::class.java.name)
             val entries = it.render(player)
-            rawRender(entries, index, false, playerInfoData)
+            index = rawRender(entries, index, false, playerInfoData)
         }
         player.sendTabListEntity(playerInfoData)
     }
@@ -38,7 +39,7 @@ class RenderController(private val latency: Int) {
                 throw IllegalStateException("Index can't exceed 80!")
             }
             val fakePlayer = PlayerInfoData(
-                WrappedGameProfile(UUID.fromString(String.format(UUID_PATTERN, index)), ""),
+                WrappedGameProfile(UUID.fromString(String.format(UUID_PATTERN, formatIndex(index))), ""),
                 latency,
                 EnumWrappers.NativeGameMode.ADVENTURE,
                 it.name()
@@ -49,4 +50,7 @@ class RenderController(private val latency: Int) {
         }
         return index
     }
+
+    private fun formatIndex(int: Int): String = if(int < 9) "0$int" else "$int"
+
 }

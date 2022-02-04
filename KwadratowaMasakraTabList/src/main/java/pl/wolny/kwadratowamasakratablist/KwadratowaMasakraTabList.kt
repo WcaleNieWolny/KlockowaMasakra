@@ -9,9 +9,13 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
+import pl.wolny.kwadratowamasakratablist.hook.VaultHook
 import pl.wolny.kwadratowamasakratablist.model.configuration.TabListConfig
+import pl.wolny.kwadratowamasakratablist.model.frame.DeathFrame
+import pl.wolny.kwadratowamasakratablist.model.frame.EmptyFrame
+import pl.wolny.kwadratowamasakratablist.model.frame.PlayerFrame
 import pl.wolny.kwadratowamasakratablist.model.frame.PrePlayerFrame
-import pl.wolny.kwadratowamasakratablist.model.frame.SimpleFrame
+import pl.wolny.kwadratowamasakratablist.model.user.TabListRepository
 import pl.wolny.kwadratowamasakratablist.render.RenderController
 import java.io.File
 import java.util.*
@@ -23,14 +27,23 @@ class KwadratowaMasakraTabList: JavaPlugin(), Listener {
 
     private val tabListConfig: TabListConfig = createConfig()
     private val renderController: RenderController = RenderController(tabListConfig.ping)
-    private val simpleFrame = SimpleFrame()
+    private val vaultHook = VaultHook()
+    private val repository = TabListRepository(dataFolder, vaultHook)
+    private val playerFrame = PlayerFrame(vaultHook, repository)
+    private val deathFrame = DeathFrame(repository)
 
 
     override fun onEnable() {
         // Plugin startup logic
         val pluginManager = Bukkit.getPluginManager()
         pluginManager.registerEvents(this, this)
+        pluginManager.registerEvents(playerFrame, this)
         renderController.registerFrame(PrePlayerFrame())
+        renderController.registerFrame(playerFrame)
+        renderController.registerFrame(EmptyFrame())
+        renderController.registerFrame(deathFrame)
+        vaultHook.setup()
+        repository.setUp()
 
     }
 
