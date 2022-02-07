@@ -9,6 +9,8 @@ import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedGameProfile
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import pl.wolny.kwadratowamasakraskull.api.SkullApi
+import pl.wolny.kwadratowamasakratablist.hook.SkullHook
 import pl.wolny.kwadratowamasakratablist.hook.VaultHook
 import pl.wolny.kwadratowamasakratablist.render.RenderController
 import java.util.*
@@ -48,9 +50,16 @@ fun Player.removeTabListEntityByUUID(uuid: UUID){
 fun Player.getAvailablePlayers(): List<Player> {
     return Bukkit.getServer().onlinePlayers.filter { player?.canSee(it) == true }
 }
-fun Player.createTabListName(vaultHook: VaultHook): String{
+fun Player.createTabListName(vaultHook: VaultHook, skullApi: SkullHook): String{
+    val stringBuilder = StringBuilder()
     if(vaultHook.isAvailable()){
-        return "&3${vaultHook.provider()?.getBalance(player)} &a${player?.displayName}"
+        stringBuilder.append("&3${vaultHook.provider()?.getBalance(player) ?: 0} ")
+    }
+    stringBuilder.append("&a${player?.displayName}")
+    if(skullApi.isAvailable()){
+        if(skullApi.provider()?.hasSkull(player!!) == true){
+            stringBuilder.append("&7\uD83D\uDC80")
+        }
     }
     return "&a${player?.displayName}"
 }

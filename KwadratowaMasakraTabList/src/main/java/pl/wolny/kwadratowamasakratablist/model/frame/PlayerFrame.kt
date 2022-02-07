@@ -6,6 +6,7 @@ import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import pl.wolny.kwadratowamasakratablist.extension.getAvailablePlayers
 import pl.wolny.kwadratowamasakratablist.extension.getBalance
+import pl.wolny.kwadratowamasakratablist.hook.SkullHook
 import pl.wolny.kwadratowamasakratablist.hook.VaultHook
 import pl.wolny.kwadratowamasakratablist.model.player.ColoredTabListPlayer
 import pl.wolny.kwadratowamasakratablist.model.player.EmptyTabListPlayer
@@ -17,7 +18,7 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
-class PlayerFrame(private val vaultHook: VaultHook, private val tabListRepository: TabListRepository, private val plugin: JavaPlugin) : Frame {
+class PlayerFrame(private val vaultHook: VaultHook, private val tabListRepository: TabListRepository, private val plugin: JavaPlugin, private val skullHook: SkullHook) : Frame {
 
     override fun render(player: Player): List<TabListPlayer> {
         val tabListPlayers: MutableList<TabListPlayer> = arrayListOf()
@@ -36,7 +37,7 @@ class PlayerFrame(private val vaultHook: VaultHook, private val tabListRepositor
         }
 
         for (availablePlayer in availablePlayers) {
-            tabListPlayers.add(RealTabListPlayer(availablePlayer, vaultHook))
+            tabListPlayers.add(RealTabListPlayer(availablePlayer, vaultHook, skullHook))
             index++
             if (index == 39) {
                 if ((availablePlayers.size - 38) != 0) {

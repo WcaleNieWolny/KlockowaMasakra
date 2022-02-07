@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
+import pl.wolny.kwadratowamasakratablist.hook.SkullHook
 import pl.wolny.kwadratowamasakratablist.hook.VaultHook
 import pl.wolny.kwadratowamasakratablist.model.configuration.TabListConfig
 import pl.wolny.kwadratowamasakratablist.model.frame.DeathFrame
@@ -29,8 +30,9 @@ class KwadratowaMasakraTabList: JavaPlugin(), Listener {
     private val tabListConfig: TabListConfig = createConfig()
     private val renderController: RenderController = RenderController(tabListConfig.ping)
     private val vaultHook = VaultHook()
+    private val skullHook = SkullHook()
     private val repository = TabListRepository(dataFolder, vaultHook)
-    private val playerFrame = PlayerFrame(vaultHook, repository, this)
+    private val playerFrame = PlayerFrame(vaultHook, repository, this, skullHook)
     private val deathFrame = DeathFrame(repository)
     private val updateTask = UpdateTask(renderController)
 
@@ -47,6 +49,7 @@ class KwadratowaMasakraTabList: JavaPlugin(), Listener {
         updateTask.runTaskTimerAsynchronously(this, 20, 20)
         vaultHook.setup()
         repository.setUp()
+        skullHook.setup()
 
     }
 
