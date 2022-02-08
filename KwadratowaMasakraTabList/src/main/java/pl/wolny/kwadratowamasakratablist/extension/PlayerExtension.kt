@@ -58,10 +58,10 @@ fun Player.createTabListName(vaultHook: VaultHook, skullApi: SkullHook): String{
     stringBuilder.append("&a${player?.displayName}")
     if(skullApi.isAvailable()){
         if(skullApi.provider()?.hasSkull(player!!) == true){
-            stringBuilder.append("&7\uD83D\uDC80")
+            stringBuilder.append("&f☠")
         }
     }
-    return "&a${player?.displayName}"
+    return stringBuilder.toString()
 }
 fun Player.getBalance(vaultHook: VaultHook): Int{
     return vaultHook.provider()?.getBalance(player)?.toInt() ?: 0
