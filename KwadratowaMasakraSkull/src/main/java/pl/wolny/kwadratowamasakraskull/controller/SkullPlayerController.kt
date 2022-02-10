@@ -23,7 +23,7 @@ class SkullPlayerController(private val pluginConfig: PluginConfig, private val 
 
     val skullPlayers: ConcurrentHashMap<UUID, SkullPlayer> = ConcurrentHashMap<UUID, SkullPlayer>()
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     fun onPlayerKill(event: PlayerDeathEvent) {
         val player = event.player
         val killer = player.killer
