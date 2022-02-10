@@ -4,4 +4,4 @@ import kotlinx.serialization.Serializable
 import java.util.*
 
 @Serializable
-data class WhiteListDataFormat(val mutableList: MutableList<String>)
+data class WhiteListDataFormat(val mutableList: MutableList<String>, var enabled: Boolean = true)

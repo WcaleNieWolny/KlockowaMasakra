@@ -6,26 +6,27 @@ import kotlinx.serialization.json.Json
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 import pl.wolny.klockowamaskaradisguise.master.whitelist.data.WhiteListDataFormat
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 
-class WhiteListController(private val dataFolder: File) {
+class WhiteListController(private val dataFolder: File): Listener {
 
     val whiteListDataFormat = WhiteListDataFormat(arrayListOf())
     val dataFile = File(dataFolder, "data.json")
-    var kickOnJoin = true
 
     fun setup(){
         if(!dataFolder.exists()){
             dataFolder.mkdirs()
         }
-        if(dataFile.exists()){
+        if(!dataFile.exists()){
             dataFile.createNewFile()
         }
-        val whiteListDataFormatFromFile = Json.decodeFromString<WhiteListDataFormat>(dataFile.bufferedReader().readLine())
+        val data = dataFile.bufferedReader().readLine() ?: return
+        val whiteListDataFormatFromFile = Json.decodeFromString<WhiteListDataFormat>(data)
         whiteListDataFormat.mutableList.addAll(whiteListDataFormatFromFile.mutableList)
     }
 
@@ -49,13 +50,31 @@ class WhiteListController(private val dataFolder: File) {
         saveDataFile()
     }
 
+    fun enableWhiteList(){
+        if(whiteListDataFormat.enabled){
+            return
+        }
+        whiteListDataFormat.enabled = true
+        saveDataFile()
+    }
+
+    fun disableWhiteList(){
+        if(!whiteListDataFormat.enabled){
+            return
+        }
+        whiteListDataFormat.enabled = false
+        saveDataFile()
+    }
+
+    fun isEnabled() = whiteListDataFormat.enabled
+
     fun listWhitelistedPlayers() = whiteListDataFormat.mutableList
 
     fun isWhitelisted(name: String) = whiteListDataFormat.mutableList.contains(name)
 
-    @EventHandler()
+    @EventHandler
     fun onConnectEvent(event: AsyncPlayerPreLoginEvent){
-        if(!kickOnJoin){
+        if(!whiteListDataFormat.enabled){
             return
         }
         if(!isWhitelisted(event.playerProfile.name!!)){

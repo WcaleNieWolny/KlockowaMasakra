@@ -40,7 +40,7 @@ tasks {
     build.dependsOn shadowJar
 }
 
-def pluginName = "KwadratowaMasakraTablist"
+def pluginName = "KlockowaMasakraDisguise"
 
 spigot {
     name = pluginName
@@ -56,6 +56,12 @@ spigot {
         'klockowamasakra.whitelist' {
             description 'Allows whitelist command'
             defaults 'op'
+        }
+    }
+    commands {
+        serverwhitelist {
+            aliases 'swl'
+            description 'A whitelist command.'
         }
     }
 }

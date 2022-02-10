@@ -46,6 +46,20 @@ class WhiteListCommand(private val whiteListController: WhiteListController): Co
                 whiteListController.removeFromWhiteList(name)
                 sender.sendFormatedMessage("&aSuccess!")
             }
+            "on" -> {
+                if(whiteListController.isEnabled()){
+                    sender.sendFormatedMessage("&cWhitelist is enabled!")
+                    return true
+                }
+                whiteListController.enableWhiteList()
+            }
+            "off" -> {
+                if(!whiteListController.isEnabled()){
+                    sender.sendFormatedMessage("&cWhitelist is disabled!")
+                    return true
+                }
+                whiteListController.disableWhiteList()
+            }
             else -> {
                 sender.sendFormatedMessage("&cInvalid usage!")
             }
