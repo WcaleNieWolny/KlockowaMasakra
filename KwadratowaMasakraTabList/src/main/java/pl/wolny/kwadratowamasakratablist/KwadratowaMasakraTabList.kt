@@ -17,6 +17,7 @@ import pl.wolny.kwadratowamasakratablist.model.frame.EmptyFrame
 import pl.wolny.kwadratowamasakratablist.model.frame.PlayerFrame
 import pl.wolny.kwadratowamasakratablist.model.frame.PrePlayerFrame
 import pl.wolny.kwadratowamasakratablist.model.user.TabListRepository
+import pl.wolny.kwadratowamasakratablist.render.FooterHeaderRenderController
 import pl.wolny.kwadratowamasakratablist.render.RenderController
 import pl.wolny.kwadratowamasakratablist.render.UpdateTask
 import java.io.File
@@ -28,8 +29,9 @@ import java.util.logging.Level
 class KwadratowaMasakraTabList: JavaPlugin(), Listener {
 
     private val tabListConfig: TabListConfig = createConfig()
-    private val renderController: RenderController = RenderController(tabListConfig.ping)
     private val vaultHook = VaultHook()
+
+    private val renderController: RenderController = RenderController(tabListConfig.ping, FooterHeaderRenderController(tabListConfig.serverBrand, tabListConfig.tabListFooter, vaultHook))
     private val skullHook = SkullHook()
     private val repository = TabListRepository(dataFolder, vaultHook)
     private val playerFrame = PlayerFrame(vaultHook, repository, this, skullHook)

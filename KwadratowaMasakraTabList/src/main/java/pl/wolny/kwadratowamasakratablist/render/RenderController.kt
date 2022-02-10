@@ -10,7 +10,7 @@ import pl.wolny.kwadratowamasakratablist.model.frame.Frame
 import pl.wolny.kwadratowamasakratablist.model.player.TabListPlayer
 import java.util.*
 
-class RenderController(private val latency: Int) {
+class RenderController(private val latency: Int, private val footerHeaderRenderController: FooterHeaderRenderController) {
 
     companion object{
         const val UUID_PATTERN = "00000000-0000-%s-0000-000000000000"
@@ -23,6 +23,7 @@ class RenderController(private val latency: Int) {
     }
 
     fun render(player: Player, update: Boolean){
+        player.setPlayerListHeaderFooter(footerHeaderRenderController.renderHeader(), footerHeaderRenderController.renderFooter(player))
         var index = 0
         val playerInfoData: MutableList<PlayerInfoData> = arrayListOf()
         frameList.forEach{

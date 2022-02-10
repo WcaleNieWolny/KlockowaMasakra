@@ -42,7 +42,7 @@ tasks {
 }
 
 spigot {
-    name = "KwadratowaMasakraTablist"
+    name = "KlockowaMasakraTablist"
     authors = ["WcaleNieWolny"]
     version = project.version
     website = "https://github.com/WcaleNieWolny/"
