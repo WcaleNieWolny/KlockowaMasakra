@@ -9,13 +9,11 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
+import pl.wolny.kwadratowamasakratablist.hook.FunnyGuildsHook
 import pl.wolny.kwadratowamasakratablist.hook.SkullHook
 import pl.wolny.kwadratowamasakratablist.hook.VaultHook
 import pl.wolny.kwadratowamasakratablist.model.configuration.TabListConfig
-import pl.wolny.kwadratowamasakratablist.model.frame.DeathFrame
-import pl.wolny.kwadratowamasakratablist.model.frame.EmptyFrame
-import pl.wolny.kwadratowamasakratablist.model.frame.PlayerFrame
-import pl.wolny.kwadratowamasakratablist.model.frame.PrePlayerFrame
+import pl.wolny.kwadratowamasakratablist.model.frame.*
 import pl.wolny.kwadratowamasakratablist.model.user.TabListRepository
 import pl.wolny.kwadratowamasakratablist.render.FooterHeaderRenderController
 import pl.wolny.kwadratowamasakratablist.render.RenderController
@@ -28,30 +26,40 @@ import java.util.logging.Level
 @SpigotPlugin
 class KwadratowaMasakraTabList: JavaPlugin(), Listener {
 
+    private val funnyGuildsHook = FunnyGuildsHook()
     private val tabListConfig: TabListConfig = createConfig()
     private val vaultHook = VaultHook()
+    private val skullHook = SkullHook()
 
     private val renderController: RenderController = RenderController(tabListConfig.ping, FooterHeaderRenderController(tabListConfig.serverBrand, tabListConfig.tabListFooter, vaultHook))
-    private val skullHook = SkullHook()
     private val repository = TabListRepository(dataFolder, vaultHook)
-    private val playerFrame = PlayerFrame(vaultHook, repository, this, skullHook)
+    private val playerFrame = PlayerFrame(vaultHook, repository, this, skullHook, funnyGuildsHook)
     private val deathFrame = DeathFrame(repository)
     private val updateTask = UpdateTask(renderController)
-
 
     override fun onEnable() {
         // Plugin startup logic
         val pluginManager = Bukkit.getPluginManager()
         pluginManager.registerEvents(this, this)
         pluginManager.registerEvents(repository, this)
+
+        vaultHook.setup()
+        skullHook.setup()
+        funnyGuildsHook.setup()
+        repository.setUp()
+
         renderController.registerFrame(PrePlayerFrame())
         renderController.registerFrame(playerFrame)
-        renderController.registerFrame(EmptyFrame())
+
+        if(funnyGuildsHook.isAvailable()){
+            renderController.registerFrame(GuildsFrame(funnyGuildsHook))
+        }else{
+            renderController.registerFrame(EmptyFrame())
+        }
+
         renderController.registerFrame(deathFrame)
+
         updateTask.runTaskTimerAsynchronously(this, 20, 20)
-        vaultHook.setup()
-        repository.setUp()
-        skullHook.setup()
 
     }
 
@@ -60,6 +68,9 @@ class KwadratowaMasakraTabList: JavaPlugin(), Listener {
     }
 
     fun createConfig(): TabListConfig{
+
+        setupRuntime()
+
         val cdn = KCdnFactory.createYamlLike()
         val configFile = File(this.dataFolder, "config.yml")
         val configSource = Source.of(configFile)
@@ -87,4 +98,14 @@ class KwadratowaMasakraTabList: JavaPlugin(), Listener {
 //            WrappedChatComponent.fromLegacyText("&cAdam")
 //        ))
     }
+
+    private fun setupRuntime(){
+        val funnyGuildsPlugin = Bukkit.getServer().pluginManager.getPlugin("FunnyGuilds")
+        if(funnyGuildsPlugin != null){
+            return
+        }
+
+        
+    }
+
 }

@@ -2,8 +2,8 @@ package pl.wolny.klockowamaskaradisguise.api
 
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
+import java.util.function.Supplier
 
 interface FakePlayerController {
-    fun<T: PossessedEntity> registerType(entityType: EntityType, t: T)
     fun disguisePlayer(player: Player, possessedEntity: PossessedEntity)
 }

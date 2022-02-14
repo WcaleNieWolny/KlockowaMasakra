@@ -25,6 +25,9 @@ class SkullHook: PluginHook<SkullApi?> {
     }
 
     override fun provider(): SkullApi? {
+        if(!isAvailable()){
+            throw IllegalStateException("Can't acces Skull provider! Hook is not Available")
+        }
         return skullApi
     }
 }

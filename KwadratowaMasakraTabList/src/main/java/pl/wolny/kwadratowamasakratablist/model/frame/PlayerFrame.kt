@@ -6,6 +6,8 @@ import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import pl.wolny.kwadratowamasakratablist.extension.getAvailablePlayers
 import pl.wolny.kwadratowamasakratablist.extension.getBalance
+import pl.wolny.kwadratowamasakratablist.extension.getGuild
+import pl.wolny.kwadratowamasakratablist.hook.FunnyGuildsHook
 import pl.wolny.kwadratowamasakratablist.hook.SkullHook
 import pl.wolny.kwadratowamasakratablist.hook.VaultHook
 import pl.wolny.kwadratowamasakratablist.model.player.ColoredTabListPlayer
@@ -18,7 +20,13 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
-class PlayerFrame(private val vaultHook: VaultHook, private val tabListRepository: TabListRepository, private val plugin: JavaPlugin, private val skullHook: SkullHook) : Frame {
+class PlayerFrame(
+    private val vaultHook: VaultHook,
+    private val tabListRepository: TabListRepository,
+    private val plugin: JavaPlugin,
+    private val skullHook: SkullHook,
+    private val funnyGuildsHook: FunnyGuildsHook
+) : Frame {
 
     override fun render(player: Player): List<TabListPlayer> {
         val tabListPlayers: MutableList<TabListPlayer> = arrayListOf()
@@ -37,7 +45,7 @@ class PlayerFrame(private val vaultHook: VaultHook, private val tabListRepositor
         }
 
         for (availablePlayer in availablePlayers) {
-            tabListPlayers.add(RealTabListPlayer(availablePlayer, vaultHook, skullHook))
+            tabListPlayers.add(RealTabListPlayer(availablePlayer, vaultHook, skullHook, funnyGuildsHook))
             index++
             if (index == 39) {
                 if ((availablePlayers.size - 38) != 0) {
@@ -72,11 +80,15 @@ class PlayerFrame(private val vaultHook: VaultHook, private val tabListRepositor
     }
 
     private fun createPrivateUser(tabListUser: TabListUser): TabListPlayer{
-        return ColoredTabListPlayer(
-            (if (vaultHook.isAvailable()) "&7${
-                vaultHook.provider()?.getBalance(Bukkit.getOfflinePlayer(tabListUser.uuid))
-            } " else "") +
-                    "&8${tabListUser.name}"
-        )
+        val stringBuilder = StringBuilder()
+        val offlinePlayer = Bukkit.getOfflinePlayer(tabListUser.uuid)
+        if (vaultHook.isAvailable()) {
+            stringBuilder.append("&7${vaultHook.provider()?.getBalance(offlinePlayer)} ")
+        }
+
+        stringBuilder.append(offlinePlayer.getGuild(funnyGuildsHook))
+        stringBuilder.append("&8${tabListUser.name}")
+
+        return ColoredTabListPlayer(stringBuilder.toString())
     }
 }

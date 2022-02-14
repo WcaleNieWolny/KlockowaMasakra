@@ -12,4 +12,5 @@ interface PossessedEntity {
     fun mob(): Entity
     fun type(): EntityType
     fun customItems(): List<ItemStack>
+    fun setup()
 }

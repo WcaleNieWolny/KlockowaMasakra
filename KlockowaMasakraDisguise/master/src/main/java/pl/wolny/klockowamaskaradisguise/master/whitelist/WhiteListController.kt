@@ -8,12 +8,13 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent
+import pl.wolny.klockowamaskaradisguise.api.WhiteListController
 import pl.wolny.klockowamaskaradisguise.master.whitelist.data.WhiteListDataFormat
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 
-class WhiteListController(private val dataFolder: File): Listener {
+class WhiteListController(private val dataFolder: File): Listener, WhiteListController {
 
     val whiteListDataFormat = WhiteListDataFormat(arrayListOf())
     val dataFile = File(dataFolder, "data.json")
@@ -70,7 +71,7 @@ class WhiteListController(private val dataFolder: File): Listener {
 
     fun listWhitelistedPlayers() = whiteListDataFormat.mutableList
 
-    fun isWhitelisted(name: String) = whiteListDataFormat.mutableList.contains(name)
+    override fun isWhitelisted(name: String) = whiteListDataFormat.mutableList.contains(name)
 
     @EventHandler
     fun onConnectEvent(event: AsyncPlayerPreLoginEvent){

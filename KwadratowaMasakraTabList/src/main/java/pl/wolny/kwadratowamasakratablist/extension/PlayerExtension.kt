@@ -8,11 +8,11 @@ import com.comphenix.protocol.wrappers.PlayerInfoData
 import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedGameProfile
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
-import pl.wolny.kwadratowamasakraskull.api.SkullApi
+import pl.wolny.kwadratowamasakratablist.hook.FunnyGuildsHook
 import pl.wolny.kwadratowamasakratablist.hook.SkullHook
 import pl.wolny.kwadratowamasakratablist.hook.VaultHook
-import pl.wolny.kwadratowamasakratablist.render.RenderController
 import java.util.*
 
 fun Player.sendTabListEntity(profileInfoData: List<PlayerInfoData>){
@@ -50,17 +50,40 @@ fun Player.removeTabListEntityByUUID(uuid: UUID){
 fun Player.getAvailablePlayers(): List<Player> {
     return Bukkit.getServer().onlinePlayers.filter { player?.canSee(it) == true }
 }
-fun Player.createTabListName(vaultHook: VaultHook, skullApi: SkullHook): String{
+
+fun OfflinePlayer.getGuild(funnyGuildsHook: FunnyGuildsHook): String {
+    if(player == null){
+        return ""
+    }
+    if (!funnyGuildsHook.isAvailable()) {
+        return ""
+    }
+    val funnyUser = funnyGuildsHook.getUser(player!!) ?: return ""
+    if (funnyUser.hasGuild()) {
+        return "&3${funnyUser.guild.tag} "
+    }
+    return ""
+}
+
+
+fun Player.createTabListName(vaultHook: VaultHook, skullApi: SkullHook, funnyGuildsHook: FunnyGuildsHook): String{
     val stringBuilder = StringBuilder()
     if(vaultHook.isAvailable()){
         stringBuilder.append("&3${vaultHook.provider()?.getBalance(player) ?: 0} ")
     }
+
+    val userGuild = player?.getGuild(funnyGuildsHook)
+    if(userGuild != null){
+        stringBuilder.append("$userGuild")
+    }
+
     stringBuilder.append("&a${player?.displayName}")
     if(skullApi.isAvailable()){
         if(skullApi.provider()?.hasSkull(player!!) == true){
             stringBuilder.append("&f☠")
         }
     }
+
     return stringBuilder.toString()
 }
 fun Player.getBalance(vaultHook: VaultHook): Int{

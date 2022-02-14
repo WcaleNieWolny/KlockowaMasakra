@@ -3,11 +3,12 @@ package pl.wolny.kwadratowamasakratablist.model.player
 import com.comphenix.protocol.wrappers.WrappedSignedProperty
 import org.bukkit.entity.Player
 import pl.wolny.kwadratowamasakratablist.extension.createTabListName
+import pl.wolny.kwadratowamasakratablist.hook.FunnyGuildsHook
 import pl.wolny.kwadratowamasakratablist.hook.SkullHook
 import pl.wolny.kwadratowamasakratablist.hook.VaultHook
 import kotlin.streams.toList
 
-class RealTabListPlayer(val player: Player, vaultHook: VaultHook, skullHook: SkullHook): AbstractColoredTabListPlayer(player.createTabListName(vaultHook, skullHook)) {
+class RealTabListPlayer(val player: Player, vaultHook: VaultHook, skullHook: SkullHook, funnyGuildsHook: FunnyGuildsHook): AbstractColoredTabListPlayer(player.createTabListName(vaultHook, skullHook, funnyGuildsHook)) {
     override fun skin(): WrappedSignedProperty {
         val playerProperty = player.playerProfile.properties.stream().filter { it.name == "textures" }.toList()
         if(playerProperty.isEmpty()){
