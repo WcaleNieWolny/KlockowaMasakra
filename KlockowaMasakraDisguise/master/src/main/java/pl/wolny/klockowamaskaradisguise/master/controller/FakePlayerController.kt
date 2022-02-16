@@ -1,14 +1,15 @@
 package pl.wolny.klockowamaskaradisguise.master.controller
 
-import org.bukkit.entity.EntityType
+import com.comphenix.protocol.PacketType
+import com.comphenix.protocol.ProtocolLibrary
+import com.comphenix.protocol.events.PacketContainer
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
 import pl.wolny.klockowamaskaradisguise.api.FakePlayerController
 import pl.wolny.klockowamaskaradisguise.api.PossessedEntity
 import java.util.*
-import java.util.function.Supplier
-import kotlin.collections.HashMap
 
 class FakePlayerController: Listener, FakePlayerController{
 
@@ -18,15 +19,21 @@ class FakePlayerController: Listener, FakePlayerController{
         possessedEntity.setup()
         disguisedPlayers[player.uniqueId] = possessedEntity
 
+        removeEntity(possessedEntity.mob().entityId, player)
         player.teleport(possessedEntity.currentLocation())
     }
 
+    @EventHandler(ignoreCancelled = true)
     fun playerMoveEvent(event: PlayerMoveEvent){
         val disguisedPlayer = disguisedPlayers[event.player.uniqueId] ?: return
-        disguisedPlayer.move(event.to)
+        if(disguisedPlayer.currentLocation() != event.to){
+            disguisedPlayer.move(event.to)
+        }
     }
 
     fun removeEntity(id: Int, player: Player){
-
+        val packet = PacketContainer(PacketType.Play.Server.ENTITY_DESTROY)
+        packet.intLists.write(0, listOf(id))
+        ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet)
     }
 }

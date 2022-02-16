@@ -21,5 +21,6 @@ class ZombieEntity(private val zombie: Zombie): AbstractEntity(zombie) {
 
     override fun setup() {
         zombie.pathfinder.setCanFloat(true)
+        zombie.setAI(false)
     }
 }

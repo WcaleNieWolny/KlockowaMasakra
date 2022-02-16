@@ -1,0 +1,4 @@
+name: KlockowaMasakraSkull
+version: '${version}'
+main: pl.wolny.kwadratowamasakraskull.KlockowaMasakraSkull
+api-version: 1.17
