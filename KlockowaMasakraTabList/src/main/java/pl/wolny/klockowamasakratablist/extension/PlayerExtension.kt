@@ -11,6 +11,7 @@ import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import pl.wolny.klockowamasakratablist.hook.FunnyGuildsHook
+import pl.wolny.klockowamasakratablist.hook.LivesHook
 import pl.wolny.klockowamasakratablist.hook.SkullHook
 import pl.wolny.klockowamasakratablist.hook.VaultHook
 import java.util.*

@@ -10,6 +10,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
 import pl.wolny.klockowamasakratablist.hook.FunnyGuildsHook
+import pl.wolny.klockowamasakratablist.hook.LivesHook
 import pl.wolny.klockowamasakratablist.hook.SkullHook
 import pl.wolny.klockowamasakratablist.hook.VaultHook
 import pl.wolny.klockowamasakratablist.model.configuration.TabListConfig
@@ -29,8 +30,9 @@ class KlockowaMasakraTabList: JavaPlugin(), Listener {
     private val tabListConfig: TabListConfig = createConfig()
     private val vaultHook = VaultHook()
     private val skullHook = SkullHook()
+    private val livesHook = LivesHook()
 
-    private val renderController: RenderController = RenderController(tabListConfig.ping, FooterHeaderRenderController(tabListConfig.serverBrand, tabListConfig.tabListFooter, vaultHook))
+    private val renderController: RenderController = RenderController(tabListConfig.ping, FooterHeaderRenderController(tabListConfig.serverBrand, tabListConfig.tabListFooter, vaultHook, livesHook))
     private val repository = TabListRepository(dataFolder, vaultHook)
     private val playerFrame = PlayerFrame(vaultHook, repository, this, skullHook, funnyGuildsHook)
     private val deathFrame = DeathFrame(repository)
@@ -46,6 +48,7 @@ class KlockowaMasakraTabList: JavaPlugin(), Listener {
         skullHook.setup()
         funnyGuildsHook.setup()
         repository.setUp()
+        livesHook.setup()
 
         renderController.registerFrame(PrePlayerFrame())
         renderController.registerFrame(playerFrame)
@@ -67,8 +70,6 @@ class KlockowaMasakraTabList: JavaPlugin(), Listener {
     }
 
     fun createConfig(): TabListConfig{
-
-        setupRuntime()
 
         val cdn = KCdnFactory.createYamlLike()
         val configFile = File(this.dataFolder, "config.yml")
@@ -98,13 +99,11 @@ class KlockowaMasakraTabList: JavaPlugin(), Listener {
 //        ))
     }
 
-    private fun setupRuntime(){
-        val funnyGuildsPlugin = Bukkit.getServer().pluginManager.getPlugin("FunnyGuilds")
-        if(funnyGuildsPlugin != null){
-            return
-        }
-
-        
-    }
+//    private fun setupRuntime(){
+//        val funnyGuildsPlugin = Bukkit.getServer().pluginManager.getPlugin("FunnyGuilds")
+//        if(funnyGuildsPlugin != null){
+//            return
+//        }
+//    }
 
 }

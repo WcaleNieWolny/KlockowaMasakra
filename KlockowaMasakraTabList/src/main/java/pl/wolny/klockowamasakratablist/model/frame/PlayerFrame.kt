@@ -7,6 +7,7 @@ import pl.wolny.klockowamasakratablist.extension.getAvailablePlayers
 import pl.wolny.klockowamasakratablist.extension.getBalance
 import pl.wolny.klockowamasakratablist.extension.getGuild
 import pl.wolny.klockowamasakratablist.hook.FunnyGuildsHook
+import pl.wolny.klockowamasakratablist.hook.LivesHook
 import pl.wolny.klockowamasakratablist.hook.SkullHook
 import pl.wolny.klockowamasakratablist.hook.VaultHook
 import pl.wolny.klockowamasakratablist.model.player.ColoredTabListPlayer

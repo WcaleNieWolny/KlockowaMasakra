@@ -1,4 +1,0 @@
-name: KlockowaMasakraLifes
-version: '${version}'
-main: pl.wolny.klockowamasakralifes.Klockowamasakralifes
-api-version: 1.18

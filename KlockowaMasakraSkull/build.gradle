@@ -59,4 +59,5 @@ spigot {
     version = project.version
     website = "https://github.com/WcaleNieWolny/"
     apiVersion = "1.17"
+
 }
