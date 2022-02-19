@@ -20,14 +20,14 @@ import pl.wolny.klockowamasakralifes.potion.PotionService
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
-import java.util.*
 import java.util.logging.Level
 
 @SpigotPlugin
-class KlockowaMasakraLifes: JavaPlugin() {
+class KlockowaMasakraLifes : JavaPlugin() {
 
     private val configuration = createConfig()
-    private val userController = UserController(this, configuration.deathKickMessage)
+    private val userController =
+        UserController(this, configuration.deathKickMessage, configuration.livesOnStart, configuration.banTime)
     private val livesApiImpl = LivesApiImpl(
         userController,
         configuration.hearthSymbol,
@@ -36,33 +36,39 @@ class KlockowaMasakraLifes: JavaPlugin() {
         configuration.noLivesMessage
     )
     private val potionService = PotionService(
+        userController,
         this,
         configuration.red,
         configuration.green,
-        configuration.blue
+        configuration.blue,
+        configuration.potionName
     )
-    private val potionCommand = PotionCommand(potionService)
+    private val potionCommand = PotionCommand(potionService, configuration.canNotGetPotion, configuration.potionRecived)
 
     override fun onEnable() {
         Bukkit.getServicesManager().register(LivesAPI::class.java, livesApiImpl, this, ServicePriority.Normal)
         Bukkit.getPluginManager().registerEvents(userController, this)
+        Bukkit.getPluginManager().registerEvents(potionService, this)
         getCommand("livepotion")?.setExecutor(potionCommand)
         loadBans()
     }
 
     override fun onDisable() {
         for (entry in userController.banMap) {
+            if (System.currentTimeMillis() >= entry.value.time) {
+                return
+            }
             try {
                 val folder = File(dataFolder, "ban-data")
-                if(!folder.exists()){
+                if (!folder.exists()) {
                     folder.mkdirs()
                 }
                 val file = File(folder, "${entry.key}.json")
-                if(!file.exists()){
+                if (!file.exists()) {
                     file.createNewFile()
                 }
                 val writer = BufferedWriter(FileWriter(file))
-                writer.append(Json.encodeToString(PlayerBan(entry.key, entry.value)))
+                writer.append(Json.encodeToString(entry.value))
                 writer.close()
             } catch (exception: Exception) {
                 exception.printStackTrace()
@@ -71,14 +77,14 @@ class KlockowaMasakraLifes: JavaPlugin() {
         // Plugin shutdown logic
     }
 
-    fun loadBans(){
+    fun loadBans() {
         val folder = File(dataFolder, "ban-data")
         val files = folder.listFiles() ?: return
         var banLoaded = 0
         for (file in files) {
             val reader = file.bufferedReader()
-            userController.banMap[UUID.fromString(file.nameWithoutExtension)] =
-                Json.decodeFromString<PlayerBan>(reader.readLine()).time
+            userController.banMap[file.nameWithoutExtension] =
+                Json.decodeFromString<PlayerBan>(reader.readLine())
             reader.close()
             banLoaded++
         }
@@ -86,12 +92,12 @@ class KlockowaMasakraLifes: JavaPlugin() {
         purgeDirectory(folder)
     }
 
-    fun createConfig(): PluginConfiguration{
+    fun createConfig(): PluginConfiguration {
         val cdn = KCdnFactory.createYamlLike()
         val configFile = File(this.dataFolder, "config.yml")
         val configSource = Source.of(configFile)
         val configResult = cdn.loadAs<PluginConfiguration>(configSource)
-        if(configResult.isErr){
+        if (configResult.isErr) {
             logger.log(Level.SEVERE, "Can't create config file!")
             configResult.error.printStackTrace()
             pluginLoader.disablePlugin(this)
@@ -101,6 +107,7 @@ class KlockowaMasakraLifes: JavaPlugin() {
         cdn.render(config, configSource)
         return config
     }
+
     fun purgeDirectory(dir: File) {
         for (file in dir.listFiles() ?: return) {
             if (file.isDirectory) purgeDirectory(file)
