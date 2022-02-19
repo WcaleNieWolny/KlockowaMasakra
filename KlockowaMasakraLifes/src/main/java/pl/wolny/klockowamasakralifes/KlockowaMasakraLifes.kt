@@ -13,9 +13,10 @@ import org.bukkit.plugin.java.JavaPlugin
 import pl.wolny.klockowamasakralifes.api.LivesAPI
 import pl.wolny.klockowamasakralifes.api.LivesApiImpl
 import pl.wolny.klockowamasakralifes.ban.PlayerBan
+import pl.wolny.klockowamasakralifes.command.LivesCommand
 import pl.wolny.klockowamasakralifes.configuration.PluginConfiguration
 import pl.wolny.klockowamasakralifes.controller.UserController
-import pl.wolny.klockowamasakralifes.potion.PotionCommand
+import pl.wolny.klockowamasakralifes.command.PotionCommand
 import pl.wolny.klockowamasakralifes.potion.PotionService
 import java.io.BufferedWriter
 import java.io.File
@@ -43,13 +44,26 @@ class KlockowaMasakraLifes : JavaPlugin() {
         configuration.blue,
         configuration.potionName
     )
-    private val potionCommand = PotionCommand(potionService, configuration.canNotGetPotion, configuration.potionRecived)
+    private val potionCommand = PotionCommand(
+        potionService,
+        configuration.canNotGetPotion,
+        configuration.canNotUseThisCommand,
+        configuration.potionRecived
+    )
+    private val livesCommand = LivesCommand(
+        userController,
+        configuration.canNotUseThisCommand,
+        configuration.livesCommand,
+        configuration.hearthSymbol,
+        configuration.hearthColourMiniMessage
+    )
 
     override fun onEnable() {
         Bukkit.getServicesManager().register(LivesAPI::class.java, livesApiImpl, this, ServicePriority.Normal)
         Bukkit.getPluginManager().registerEvents(userController, this)
         Bukkit.getPluginManager().registerEvents(potionService, this)
         getCommand("livepotion")?.setExecutor(potionCommand)
+        getCommand("lives")?.setExecutor(livesCommand)
         loadBans()
     }
 

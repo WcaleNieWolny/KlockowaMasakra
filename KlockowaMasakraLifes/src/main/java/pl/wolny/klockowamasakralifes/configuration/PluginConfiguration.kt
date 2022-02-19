@@ -18,6 +18,9 @@ class PluginConfiguration {
     @Description("Hearth colour")
     var hearthColour = "&4"
 
+    @Description("Hearth colour minimessage")
+    var hearthColourMiniMessage = "<dark_red>"
+
     @Description("Kick message when no lives are available")
     @Description("This value uses MiniMessage (https://docs.adventure.kyori.net/minimessage/format)")
     @Description("Placeholder: #MINUTES# - shows ban minutes left")
@@ -45,5 +48,16 @@ class PluginConfiguration {
     @Description("Message send when you successfully get life potion")
     @Description("This message uses MiniMessage")
     var potionRecived = "<green>Dodano miksturę życia!"
+
+    @Description("Message send when you can not use a command")
+    @Description("This message uses MiniMessage")
+    var canNotUseThisCommand = "<#e31b4a>Nie możesz użyć tej komendy!"
+
+    @Description("Message send when you use /lives command")
+    @Description("This message uses MiniMessage")
+    @Description("Placeholder: #LIVES# - number of player lifes")
+    @Description("Placeholder: #HEARTH_SYMBOL# - look at configuration above")
+    @Description("Placeholder: #HEARTH_COLOUR_MINIMESSAGE# - look at configuration above")
+    var livesCommand = "<green>Posiadasz: <white>#LIVES#<gray>x#HEARTH_COLOUR_MINIMESSAGE##HEARTH_SYMBOL#"
 
 }

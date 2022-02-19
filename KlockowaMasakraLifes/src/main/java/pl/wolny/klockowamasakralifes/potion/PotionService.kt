@@ -31,22 +31,26 @@ class PotionService(
         val item = ItemStack(Material.POTION)
 
         val meta = item.itemMeta as PotionMeta
-        meta.color = Color.fromBGR(blue, green, red)
-        meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
-        meta.displayName(Component.empty().decoration(TextDecoration.ITALIC, false).append(formatMessage(potionName)))
+
+        with(meta){
+            color = Color.fromBGR(blue, green, red)
+            addItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
+            displayName(Component.empty().decoration(TextDecoration.ITALIC, false).append(formatMessage(potionName)))
+            persistentDataContainer.set(
+                namespacedKey,
+                PersistentDataType.SHORT,
+                1
+            )
+        }
 
         item.itemMeta = meta
-        item.itemMeta.persistentDataContainer.set(
-            namespacedKey,
-            PersistentDataType.SHORT,
-            1
-        )
 
         return item
     }
 
     @EventHandler
     fun onPotionDrink(event: PlayerItemConsumeEvent) {
+        println("FUCK!")
         val item = event.item
         if (item.itemMeta.persistentDataContainer.has(
                 namespacedKey,
@@ -54,7 +58,6 @@ class PotionService(
             )
         ) {
             val player = event.player
-            event.isCancelled = true
             userController.setLives(player, userController.getLives(player) + 1)
         }
     }
