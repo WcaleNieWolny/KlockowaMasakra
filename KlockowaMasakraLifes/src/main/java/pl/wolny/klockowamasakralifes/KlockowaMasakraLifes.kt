@@ -14,6 +14,7 @@ import pl.wolny.klockowamasakralifes.api.LivesAPI
 import pl.wolny.klockowamasakralifes.api.LivesApiImpl
 import pl.wolny.klockowamasakralifes.ban.PlayerBan
 import pl.wolny.klockowamasakralifes.command.LivesCommand
+import pl.wolny.klockowamasakralifes.command.PardonCommand
 import pl.wolny.klockowamasakralifes.configuration.PluginConfiguration
 import pl.wolny.klockowamasakralifes.controller.UserController
 import pl.wolny.klockowamasakralifes.command.PotionCommand
@@ -57,6 +58,14 @@ class KlockowaMasakraLifes : JavaPlugin() {
         configuration.hearthSymbol,
         configuration.hearthColourMiniMessage
     )
+    private val pardonCommand = PardonCommand(
+        userController,
+        configuration.canNotUseThisCommand,
+        configuration.pardonCommand,
+        configuration.pardonAllCommand,
+        configuration.pardonNoPlayerFound,
+        configuration.invalidUsage
+    )
 
     override fun onEnable() {
         Bukkit.getServicesManager().register(LivesAPI::class.java, livesApiImpl, this, ServicePriority.Normal)
@@ -64,6 +73,7 @@ class KlockowaMasakraLifes : JavaPlugin() {
         Bukkit.getPluginManager().registerEvents(potionService, this)
         getCommand("livepotion")?.setExecutor(potionCommand)
         getCommand("lives")?.setExecutor(livesCommand)
+        getCommand("livepardon")?.setExecutor(pardonCommand)
         loadBans()
     }
 

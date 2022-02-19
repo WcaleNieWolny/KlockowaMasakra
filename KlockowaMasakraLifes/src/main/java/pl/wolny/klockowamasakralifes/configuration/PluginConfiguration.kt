@@ -60,4 +60,22 @@ class PluginConfiguration {
     @Description("Placeholder: #HEARTH_COLOUR_MINIMESSAGE# - look at configuration above")
     var livesCommand = "<green>Posiadasz: <white>#LIVES#<gray>x#HEARTH_COLOUR_MINIMESSAGE##HEARTH_SYMBOL#"
 
+    @Description("Message send when you successfully use /livepardon PLAYER command")
+    @Description("This message uses MiniMessage")
+    @Description("Placeholder: #PLAYER# - player name")
+    var pardonCommand = "<green>Przebaczasz #PLAYER#!"
+
+    @Description("Message send when you successfully use /livepardon * command")
+    @Description("This message uses MiniMessage")
+    var pardonAllCommand = "<green> Ożywiasz wszystkich zmarłych graczy na serwerze!"
+
+    @Description("Message send when a player is not live banned")
+    @Description("This message uses MiniMessage")
+    var pardonNoPlayerFound = "<#e31b4a> Podany gracz nie jest zbanowany za brak żyć!"
+
+    @Description("Message send when you use a command with invalid arguments")
+    @Description("This message uses MiniMessage")
+    @Description("Placeholder: #USAGE# - command usage")
+    var invalidUsage = "<#e31b4a> Podano złe argumenty! Poprawne użycie: #USAGE#"
+
 }
