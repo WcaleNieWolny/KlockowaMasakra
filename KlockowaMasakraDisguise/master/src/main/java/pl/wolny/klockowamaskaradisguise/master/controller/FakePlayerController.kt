@@ -23,6 +23,14 @@ class FakePlayerController: Listener, FakePlayerController{
         player.teleport(possessedEntity.currentLocation())
     }
 
+    override fun revealPlayer(player: Player) {
+        val possessedEntity = disguisedPlayers[player.uniqueId] ?: throw IllegalStateException("Player ${player.name} is not disguised!")
+        possessedEntity.reveal()
+        disguisedPlayers.remove(player.uniqueId)
+    }
+
+    override fun isDisguised(player: Player) = disguisedPlayers.containsKey(player.uniqueId)
+
     @EventHandler(ignoreCancelled = true)
     fun playerMoveEvent(event: PlayerMoveEvent){
         val disguisedPlayer = disguisedPlayers[event.player.uniqueId] ?: return

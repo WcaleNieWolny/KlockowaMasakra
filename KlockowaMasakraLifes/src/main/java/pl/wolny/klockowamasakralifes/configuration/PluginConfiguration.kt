@@ -78,4 +78,13 @@ class PluginConfiguration {
     @Description("Placeholder: #USAGE# - command usage")
     var invalidUsage = "<#e31b4a> Podano złe argumenty! Poprawne użycie: #USAGE#"
 
+    @Description("Message send when you successfully use /givelives PLAYER AMMOUNT command")
+    @Description("This message uses MiniMessage")
+    @Description("Placeholder: #PLAYER# - player name")
+    @Description("Placeholder: #AMMOUNT# - player name")
+    var giveLivesCommand = "<green>Dodajesz AMMOUNT żyć dla #PLAYER#!"
+
+    @Description("Message send when you use /givelives on offline player")
+    @Description("This message uses MiniMessage")
+    var playerNotOnline = "<#e31b4a> Ten gracz nie jest online!"
 }

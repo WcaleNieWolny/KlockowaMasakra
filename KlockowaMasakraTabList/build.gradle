@@ -50,7 +50,7 @@ spigot {
     version = project.version
     website = "https://github.com/WcaleNieWolny/"
     apiVersion = "1.17"
-    softDepends = List.of("Vault", "KwadratowaMasakraSkull", "KlockowaMasakraLifes", "FunnyGuilds")
+    softDepends = List.of("Vault", "KlockowaMasakraSkull", "KlockowaMasakraLifes", "FunnyGuilds")
     debug {
         buildVersion = "1.17.1"
     }

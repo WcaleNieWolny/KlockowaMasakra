@@ -17,24 +17,28 @@ class PardonCommand(
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if(!sender.hasPermission("klockowalifes.pardon")){
             sender.sendMessage(formatMessage(canNotUseThisCommand))
+            return true
         }
         if(args.isEmpty()){
             sender.sendMessage(invalidUsage
                 .replace("#USAGE#", "/livepardon player | /livepardon *"))
+            return true
         }
         val argument = args[0]
 
-        if(argument == "*"){
+        return if(argument == "*"){
             userController.banMap.clear()
             sender.sendMessage(formatMessage(pardonAllCommand))
+            true
         }else if(userController.banMap.remove(argument) == null){
             //Can't find player in ban map
             sender.sendMessage(pardonNoPlayerFound)
+            true
         }else {
             //Unbanned player
             sender.sendMessage(formatMessage(pardonCommand
                 .replace("#PLAYER#", argument)))
+            true
         }
-        return true
     }
 }

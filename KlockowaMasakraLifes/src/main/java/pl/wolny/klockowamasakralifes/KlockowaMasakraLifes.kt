@@ -13,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import pl.wolny.klockowamasakralifes.api.LivesAPI
 import pl.wolny.klockowamasakralifes.api.LivesApiImpl
 import pl.wolny.klockowamasakralifes.ban.PlayerBan
+import pl.wolny.klockowamasakralifes.command.AddLivesCommand
 import pl.wolny.klockowamasakralifes.command.LivesCommand
 import pl.wolny.klockowamasakralifes.command.PardonCommand
 import pl.wolny.klockowamasakralifes.configuration.PluginConfiguration
@@ -66,6 +67,13 @@ class KlockowaMasakraLifes : JavaPlugin() {
         configuration.pardonNoPlayerFound,
         configuration.invalidUsage
     )
+    private val addLivesCommand = AddLivesCommand(
+        userController,
+        configuration.canNotUseThisCommand,
+        configuration.invalidUsage,
+        configuration.giveLivesCommand,
+        configuration.playerNotOnline
+    )
 
     override fun onEnable() {
         Bukkit.getServicesManager().register(LivesAPI::class.java, livesApiImpl, this, ServicePriority.Normal)
@@ -74,6 +82,7 @@ class KlockowaMasakraLifes : JavaPlugin() {
         getCommand("livepotion")?.setExecutor(potionCommand)
         getCommand("lives")?.setExecutor(livesCommand)
         getCommand("livepardon")?.setExecutor(pardonCommand)
+        getCommand("givelives")?.setExecutor(addLivesCommand)
         loadBans()
     }
 

@@ -14,6 +14,7 @@ import pl.wolny.klockowamasakralifes.ban.PlayerBan
 import pl.wolny.klockowamasakralifes.formatMessage
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
 
 class UserController(
     private val plugin: JavaPlugin,
@@ -40,16 +41,25 @@ class UserController(
         if (cacheLives != null) {
             return cacheLives
         }
-        val completablePersistentFuture = CompletableFuture<Int?>()
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin) {
-            completablePersistentFuture.complete(
-                player.persistentDataContainer.get(
-                    NamespacedKey(plugin, "WOLNY_LIVES"),
-                    PersistentDataType.INTEGER
+        val lives: Int?
+        if(!Bukkit.isPrimaryThread()){
+            val completablePersistentFuture = CompletableFuture<Int?>()
+            Bukkit.getScheduler().runTask(plugin, Runnable {
+                completablePersistentFuture.complete(
+                    player.persistentDataContainer.get(
+                        NamespacedKey(plugin, "WOLNY_LIVES"),
+                        PersistentDataType.INTEGER
+                    )
                 )
+            })
+            lives = completablePersistentFuture.get(5, TimeUnit.SECONDS)
+        }else{
+            lives = player.persistentDataContainer.get(
+                NamespacedKey(plugin, "WOLNY_LIVES"),
+                PersistentDataType.INTEGER
             )
         }
-        val lives = completablePersistentFuture.get()
+
         if (lives != null) {
             livesMap[player.uniqueId] = lives
             return lives

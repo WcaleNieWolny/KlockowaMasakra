@@ -26,11 +26,4 @@ class TestCommand(val fakePlayerController: FakePlayerController): CommandExecut
         fakePlayerController.disguisePlayer(sender, zombieEntity)
         return true
     }
-
-    private fun getLookingAt(player: Player, location: Location): Boolean {
-        val eye: Location = player.eyeLocation
-        val toEntity: Vector = location.toVector().subtract(eye.toVector())
-        val dot: Double = toEntity.normalize().dot(eye.direction)
-        return dot > 0.99
-    }
 }

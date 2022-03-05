@@ -13,4 +13,5 @@ interface PossessedEntity {
     fun type(): EntityType
     fun customItems(): List<ItemStack>
     fun setup()
+    fun reveal()
 }

@@ -72,6 +72,10 @@ spigot {
             description 'Give access to livepardon command'
             defaults 'op'
         }
+        'klockowalifes.givelive' {
+            description 'Give access to givelive command'
+            defaults 'op'
+        }
     }
     commands {
         livepotion {
@@ -84,6 +88,10 @@ spigot {
         }
         livepardon {
             description 'Unban player if banned for no lives avalible'
+        }
+        givelives{
+            aliases 'dajzyc'
+            description 'Give x ammount of lives for selected player'
         }
     }
 }

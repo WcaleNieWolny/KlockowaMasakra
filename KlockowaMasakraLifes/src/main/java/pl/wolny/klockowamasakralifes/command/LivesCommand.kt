@@ -22,7 +22,7 @@ class LivesCommand(
         sender.sendMessage(formatMessage(livesCommand
             .replace("#LIVES#", userController.getLives(sender).toString())
             .replace("#HEARTH_SYMBOL#", hearthSymbol)
-            .replace("HEARTH_COLOUR_MINIMESSAGE", hearthColourMiniMessage)))
+            .replace("#HEARTH_COLOUR_MINIMESSAGE#", hearthColourMiniMessage)))
         return true
     }
 }
