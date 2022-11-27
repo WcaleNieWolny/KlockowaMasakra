@@ -14,7 +14,7 @@ class SkullHook: PluginHook<SkullApi?> {
     }
 
     override fun setup() {
-        val skullPlugin = Bukkit.getServer().pluginManager.getPlugin("KwadratowaMasakraSkull") ?: return
+        val skullPlugin = Bukkit.getServer().pluginManager.getPlugin("KlockowaMasakraSkull") ?: return
         if (!skullPlugin.isEnabled) {
             return
         }

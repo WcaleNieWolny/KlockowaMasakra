@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import pl.wolny.klockowamasakratablist.hook.VaultHook
 import java.io.BufferedWriter
 import java.io.File
@@ -29,7 +30,7 @@ class TabListRepository(private val dataFolder: File, private val vaultHook: Vau
             val userString = it.bufferedReader().readLine()
             try {
                 val tabListUser: TabListUser = Json { ignoreUnknownKeys = true }.decodeFromString(TabListUser.serializer(), userString)
-                tabListUser.deaths = Bukkit.getOfflinePlayer(it.nameWithoutExtension).getStatistic(Statistic.DEATHS)
+                tabListUser.deaths = Bukkit.getOfflinePlayer(UUID.fromString(it.nameWithoutExtension)).getStatistic(Statistic.DEATHS)
                 tabListUser.uuid = UUID.fromString(it.nameWithoutExtension)
                 tabListUsers.add(tabListUser)
             } catch (exception: Exception) {
@@ -48,6 +49,29 @@ class TabListRepository(private val dataFolder: File, private val vaultHook: Vau
         val player = event.player
         val tabListUser = tabListUsers.filter { it.name == player.name }[0]
         tabListUser.deaths++
+    }
+
+    @EventHandler
+    fun onQuit(event: PlayerQuitEvent) {
+        val provider = vaultHook.provider() ?: return
+        val player = event.player
+        val playerFile = File(File(dataFolder, "data"), "${player.uniqueId}.json")
+        if (!playerFile.exists()) {
+            if (!playerFile.createNewFile()) {
+                throw RuntimeException("Can not create user file! User: ${player.uniqueId}")
+            }
+
+            val tabListUser = tabListUsers.filter { it.uuid == player.uniqueId }[0]
+            tabListUser.money = provider.getBalance(player)
+
+            try {
+                val writer = BufferedWriter(FileWriter(playerFile))
+                writer.append(Json.encodeToString(tabListUser))
+                writer.close()
+            } catch (exception: Exception) {
+                throw RuntimeException("Can not create user file! User: ${player.uniqueId}")
+            }
+        }
     }
 
     @EventHandler

@@ -17,6 +17,7 @@ class VaultHook: PluginHook<Economy?> {
     override fun setup() {
         val vault = getServer().pluginManager.getPlugin("Vault") ?: return
         if (!vault.isEnabled) {
+            println("???")
             return
         }
         val rsp: RegisteredServiceProvider<Economy> = getServer().servicesManager.getRegistration(Economy::class.java) ?: return

@@ -8,7 +8,7 @@ import java.util.*
 @Serializable
 data class TabListUser(
     val name: String,
-    val money: Double,
+    var money: Double,
     @Transient var deaths: Int = 0,
     @Transient var uuid: UUID = UUID.randomUUID()
 ) {

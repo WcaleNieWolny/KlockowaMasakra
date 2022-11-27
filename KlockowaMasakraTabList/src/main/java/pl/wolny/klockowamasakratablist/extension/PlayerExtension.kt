@@ -61,7 +61,7 @@ fun OfflinePlayer.getGuild(funnyGuildsHook: FunnyGuildsHook): String {
     }
     val funnyUser = funnyGuildsHook.getUser(player!!) ?: return ""
     if (funnyUser.hasGuild()) {
-        return "&3${funnyUser.guild.tag} "
+        return "&3${funnyUser.guild.get().tag} "
     }
     return ""
 }

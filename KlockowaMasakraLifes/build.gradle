@@ -62,7 +62,7 @@ spigot {
     authors = ["WcaleNieWolny"]
     version = project.version
     website = "https://github.com/WcaleNieWolny/"
-    apiVersion = "1.17"
+    apiVersion = "1.16"
     permissions {
         'klockowalifes.potion' {
             description 'Give access to livepotion command'

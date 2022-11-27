@@ -82,7 +82,7 @@ class PluginConfiguration {
     @Description("This message uses MiniMessage")
     @Description("Placeholder: #PLAYER# - player name")
     @Description("Placeholder: #AMMOUNT# - player name")
-    var giveLivesCommand = "<green>Dodajesz AMMOUNT żyć dla #PLAYER#!"
+    var giveLivesCommand = "<green>Dodajesz #AMMOUNT# żyć dla #PLAYER#!"
 
     @Description("Message send when you use /givelives on offline player")
     @Description("This message uses MiniMessage")
