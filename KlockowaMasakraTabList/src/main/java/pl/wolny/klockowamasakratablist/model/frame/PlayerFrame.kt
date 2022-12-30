@@ -65,10 +65,6 @@ class PlayerFrame(
         }
         if(offlinePlayers.size > slotLeft){
             val overflow = offlinePlayers.size - slotLeft
-            if(overflow == 1){
-                tabListPlayers.add(createPrivateUser(offlinePlayers[37]))
-                return tabListPlayers
-            }
             tabListPlayers.add(ColoredTabListPlayer("... I $overflow jeszcze ..."))
             return tabListPlayers
         }

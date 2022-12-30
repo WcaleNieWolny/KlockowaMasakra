@@ -1,9 +1,10 @@
 package pl.wolny.klockowamasakratablist
 
+import eu.okaeri.configs.ConfigManager
+import eu.okaeri.configs.OkaeriConfig
+import eu.okaeri.configs.OkaeriConfigInitializer
+import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer
 import kr.entree.spigradle.annotations.SpigotPlugin
-import net.dzikoysk.cdn.KCdnFactory
-import net.dzikoysk.cdn.loadAs
-import net.dzikoysk.cdn.source.Source
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -26,20 +27,28 @@ import java.util.logging.Level
 @SpigotPlugin
 class KlockowaMasakraTabList: JavaPlugin(), Listener {
 
-    private val funnyGuildsHook = FunnyGuildsHook()
-    private val tabListConfig: TabListConfig = createConfig()
-    private val vaultHook = VaultHook()
-    private val skullHook = SkullHook()
-    private val livesHook = LivesHook()
-
-    private val renderController: RenderController = RenderController(tabListConfig.ping, FooterHeaderRenderController(tabListConfig.serverBrand, tabListConfig.tabListFooter, vaultHook, livesHook))
-    private val repository = TabListRepository(dataFolder, vaultHook)
-    private val playerFrame = PlayerFrame(vaultHook, repository, this, skullHook, funnyGuildsHook)
-    private val deathFrame = DeathFrame(repository)
-    private val updateTask = UpdateTask(renderController)
+    private var renderController: RenderController? = null;
 
     override fun onEnable() {
         // Plugin startup logic
+
+        val funnyGuildsHook = FunnyGuildsHook()
+        val tabListConfig: TabListConfig? = createConfig()
+        if (tabListConfig == null){
+            this.pluginLoader.disablePlugin(this);
+            return;
+        }
+
+        val vaultHook = VaultHook()
+        val skullHook = SkullHook()
+        val livesHook = LivesHook()
+
+        this.renderController = RenderController(tabListConfig.ping, FooterHeaderRenderController(tabListConfig.serverBrand, tabListConfig.tabListFooter, vaultHook, livesHook))
+        val repository = TabListRepository(dataFolder, vaultHook)
+        val playerFrame = PlayerFrame(vaultHook, repository, this, skullHook, funnyGuildsHook)
+        val deathFrame = DeathFrame(repository)
+        val updateTask = UpdateTask(this.renderController!!)
+
         val pluginManager = Bukkit.getPluginManager()
         pluginManager.registerEvents(this, this)
         pluginManager.registerEvents(repository, this)
@@ -50,16 +59,16 @@ class KlockowaMasakraTabList: JavaPlugin(), Listener {
         repository.setUp()
         livesHook.setup()
 
-        renderController.registerFrame(PrePlayerFrame())
-        renderController.registerFrame(playerFrame)
+        this.renderController!!.registerFrame(PrePlayerFrame())
+        this.renderController!!.registerFrame(playerFrame)
 
         if(funnyGuildsHook.isAvailable()){
-            renderController.registerFrame(GuildsFrame(funnyGuildsHook))
+            this.renderController!!.registerFrame(GuildsFrame(funnyGuildsHook))
         }else{
-            renderController.registerFrame(EmptyFrame())
+            this.renderController!!.registerFrame(EmptyFrame())
         }
 
-        renderController.registerFrame(deathFrame)
+        this.renderController!!.registerFrame(deathFrame)
 
         updateTask.runTaskTimerAsynchronously(this, 20, 20)
 
@@ -69,27 +78,25 @@ class KlockowaMasakraTabList: JavaPlugin(), Listener {
         // Plugin shutdown logic
     }
 
-    fun createConfig(): TabListConfig{
+    fun createConfig(): TabListConfig?{
 
-        val cdn = KCdnFactory.createYamlLike()
-        val configFile = File(this.dataFolder, "config.yml")
-        val configSource = Source.of(configFile)
-        val configResult = cdn.loadAs<TabListConfig>(configSource)
-        if(configResult.isErr){
-            logger.log(Level.SEVERE, "Can't create config file!")
-            configResult.error.printStackTrace()
-            pluginLoader.disablePlugin(this)
-            return TabListConfig() //Can't return null
+        try {
+            return ConfigManager.create(TabListConfig::class.java) { it: OkaeriConfig ->
+                it.withConfigurer(YamlBukkitConfigurer())
+                it.withBindFile(File(dataFolder, "settings.yml"))
+                it.saveDefaults()
+                it.load(true)
+            }
+        } catch (exception: Exception) {
+            logger.log(Level.SEVERE, "Error loading config.yml", exception)
+            return null
         }
-        val config = configResult.get()
-        cdn.render(config, configSource)
-        return config
     }
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent){
         val player = event.player
-        Bukkit.getScheduler().runTaskAsynchronously(this, Runnable { renderController.render(player, false)  })
+        Bukkit.getScheduler().runTaskAsynchronously(this, Runnable { renderController!!.render(player, false)  })
 
 //        player.sendTabListEntity(PlayerInfoData(
 //            WrappedGameProfile(UUID.randomUUID(), "ADAM"),
