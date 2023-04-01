@@ -24,11 +24,8 @@ class SkullPlayerController(private val pluginConfig: PluginConfig, private val 
     @EventHandler(ignoreCancelled = true)
     fun onPlayerKill(event: PlayerDeathEvent) {
         val player = event.player
-        val killer = player.killer
+        val killer = player.killer ?: return
 
-        if(killer !is Player){
-            return
-        }
         if(!haveSkull(player.uniqueId)){
             val response = vaultHook.economy!!.withdrawPlayer(killer, pluginConfig.skullPenalty.toDouble())
             if(!response.transactionSuccess()){

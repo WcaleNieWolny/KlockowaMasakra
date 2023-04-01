@@ -29,7 +29,7 @@ import java.util.logging.Level
 class KlockowaMasakraLifes : JavaPlugin() {
 
     private val configuration = createConfig()
-    private val userController =
+    val userController =
         UserController(this, configuration.deathKickMessage, configuration.livesOnStart, configuration.banTime)
     private val livesApiImpl = LivesApiImpl(
         userController,
@@ -84,6 +84,9 @@ class KlockowaMasakraLifes : JavaPlugin() {
         getCommand("livepardon")?.setExecutor(pardonCommand)
         getCommand("givelives")?.setExecutor(addLivesCommand)
         loadBans()
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            PlaceHolderAPI(this).register();
+        }
     }
 
     override fun onDisable() {

@@ -29,6 +29,9 @@ repositories {
     maven { url = uri("https://repo.panda-lang.org/releases") }
     maven { url 'https://jitpack.io' }
     maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven {
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
@@ -44,6 +47,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
     implementation 'net.dzikoysk:cdn:1.13.5'
     implementation 'net.dzikoysk:cdn-kt:1.13.5'
+    compileOnly 'me.clip:placeholderapi:2.11.3'
 }
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(16))
@@ -94,4 +98,5 @@ spigot {
             description 'Give x ammount of lives for selected player'
         }
     }
+    softDepends 'PlaceholderAPI'
 }
